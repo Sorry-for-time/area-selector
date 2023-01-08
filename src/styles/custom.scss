@@ -19,6 +19,10 @@
       position: absolute;
       border: 1px dashed hsl(221, 64%, 49%);
       background-color: hsla(180, 65%, 65%, 0.24);
+
+      &.hide {
+        display: none;
+      }
     }
 
     .content-area {
