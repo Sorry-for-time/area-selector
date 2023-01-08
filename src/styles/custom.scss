@@ -51,11 +51,23 @@
         &.when-selected {
           position: relative;
 
+          &::before {
+            content: "";
+            position: absolute;
+            box-sizing: border-box;
+            right: -15%;
+            top: -15%;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px dashed rgb(60, 255, 245);
+          }
+
           &::after {
             content: "";
             position: absolute;
             border-radius: 5px;
-            border: 3px dashed rgb(60, 255, 245);
+            border: 2px dashed rgb(60, 255, 245);
             width: 110%;
             height: 110%;
             margin: -5%;
