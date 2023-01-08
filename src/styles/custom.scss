@@ -1,0 +1,63 @@
+#app {
+  background: scroll no-repeat center url("/img/bgc.jpg");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  .selector-area {
+    width: 90%;
+    height: 90%;
+    user-select: none;
+    border: 1px dashed hsla(0, 0%, 100%, 0.479);
+    border-radius: 5px;
+    position: relative;
+
+    // 框选器
+    .selector-box {
+      z-index: 999;
+      position: absolute;
+      border: 1px dashed hsl(221, 64%, 49%);
+      background-color: hsla(180, 65%, 65%, 0.24);
+    }
+
+    .content-area {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      margin: 100px calc(calc(100% - 500px) / 2);
+      display: grid;
+
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+      gap: 20px;
+
+      .item {
+        text-align: center;
+        background-color: rgba(231, 127, 7, 0.075);
+        backdrop-filter: blur(12px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 0 0 2px black;
+        font-weight: bold;
+        border-radius: 5px;
+        box-shadow: 0 0 3px hsla(0, 0%, 0%, 0.521), 0 0 3px black inset;
+
+        &.when-selected {
+          position: relative;
+
+          &::after {
+            content: "";
+            position: absolute;
+            border-radius: 5px;
+            border: 3px dashed rgb(60, 255, 245);
+            width: 110%;
+            height: 110%;
+            margin: -5%;
+          }
+        }
+      }
+    }
+  }
+}
