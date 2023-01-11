@@ -137,7 +137,6 @@ window.addEventListener("load", (): void => {
 
     // 循环判断每个子节点是否被选取覆盖
     for (const aSpan of allSpans) {
-      aSpan.classList.remove("when-selected");
       const spanLeft: number = aSpan.offsetLeft + contentArea.offsetLeft;
       const spanTop: number = aSpan.offsetTop + contentArea.offsetTop;
       const spanEndWidth: number = aSpan.offsetLeft + aSpan.offsetWidth + contentArea.offsetLeft;
@@ -152,6 +151,8 @@ window.addEventListener("load", (): void => {
         // 如何被覆盖久将其节点引用添加到 set 当中
         selectedSpanBucket.add(aSpan);
         aSpan.classList.add("when-selected");
+      } else {
+        aSpan.classList.remove("when-selected");
       }
     }
     console.log(selectedSpanBucket);

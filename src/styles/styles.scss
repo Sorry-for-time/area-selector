@@ -91,6 +91,7 @@ body,
     .selector-box {
       z-index: 233;
       position: absolute;
+
       /*
         设置宽高默认占满整个拖拽区域
       */
@@ -98,7 +99,8 @@ body,
       top: 0;
       bottom: 0;
       left: 0;
-      background-color: #36d0ff5e;
+      background-color: #82cde433;
+      backdrop-filter: blur(8px) brightness(1.2) saturate(1.3);
       /* 更改变换坐标原点 */
       transform-origin: left top;
       /*
