@@ -26,17 +26,35 @@ const lastSavedPosition = {
 };
 
 window.addEventListener("load", (): void => {
+  // 取得所有需要进行操作的 dom 节点
   const selectorArea = document.querySelector(".selector-area") as HTMLDivElement;
   const selectorBox = document.querySelector(".selector-box") as HTMLDivElement;
   const contentArea = document.querySelector(".content-area") as HTMLDivElement;
+
+  // 拖选区域内节点的数组
   const allSpans: Array<HTMLSpanElement> = [];
+  // 被选中的节点的记录数组
   const selectedSpanBucket: Set<HTMLSpanElement> = new Set<HTMLSpanElement>();
 
-  // 鼠标移动过程中设置框选器的操作
+  // 填充元素
+  const fragmentWrapper: DocumentFragment = document.createDocumentFragment();
+  for (let i: number = 1; i <= 36; ++i) {
+    const span: HTMLSpanElement = document.createElement("span");
+    span.classList.add("item");
+    span.textContent = `${i}`;
+    allSpans.push(span);
+    fragmentWrapper.appendChild(span);
+  }
+  // 将所有节点批量插入到目标区域内
+  contentArea.appendChild(fragmentWrapper);
+
+  /**
+   * 鼠标移动过程中设置框选器的操作
+   * @param moveAction
+   */
   const whenMoveAction: (mv: MouseEvent) => void = (moveAction: MouseEvent): void => {
     moveAction.stopPropagation();
-    moveAction.stopImmediatePropagation();
-    // 定位的初始位置
+    // 取得拖拽框的初始位置
     const initX: number = dragStartCoordinates.x;
     const initY: number = dragStartCoordinates.y;
 
@@ -50,7 +68,7 @@ window.addEventListener("load", (): void => {
     let applyWith: number = movingX - initX;
     let applyHeight: number = movingY - initY;
 
-    // 正方向拖拽的情况
+    // 向正方向拖拽的情况
     if (applyWith >= selectorArea.offsetWidth - initX) {
       applyWith = selectorArea.offsetWidth - initX;
     }
@@ -58,7 +76,7 @@ window.addEventListener("load", (): void => {
       applyHeight = selectorArea.offsetHeight - initY;
     }
 
-    // 往反方向拖拽的情况
+    // 往反方向进行拖拽的情况
     if (applyWith < 0) {
       applyLeft = movingX;
       applyWith = initX - movingX;
@@ -76,31 +94,21 @@ window.addEventListener("load", (): void => {
       }
     }
 
-    // 更新位置
+    // 更新最后一次记录的位置(这里图方便的做法)
     lastSavedPosition.translateX = applyLeft;
     lastSavedPosition.translateY = applyTop;
     lastSavedPosition.width = applyWith;
     lastSavedPosition.height = applyHeight;
 
-    // 使用 transform 修改 style 字符串
+    // 修改 style 字符串, 因为拖拽框的宽高和拖拽视图区域的一致, 所以比例换算会很简单
     selectorBox.style.cssText = `transform:translate(${applyLeft}px,${applyTop}px) scale(${
       applyWith / selectorArea.offsetWidth
     },${applyHeight / selectorArea.offsetHeight})`;
   };
 
-  // 填充元素
-  const fragmentWrapper: DocumentFragment = document.createDocumentFragment();
-  for (let i: number = 1; i <= 36; ++i) {
-    const span: HTMLSpanElement = document.createElement("span");
-    span.classList.add("item");
-    span.textContent = `${i}`;
-    allSpans.push(span);
-    fragmentWrapper.appendChild(span);
-  }
-
-  contentArea.appendChild(fragmentWrapper);
-
-  // 鼠标按下后
+  /**
+   * 鼠标按下后操作
+   */
   document.addEventListener("mousedown", (clickEv: MouseEvent): void => {
     clickEv.stopPropagation();
     dragStartCoordinates.x = clickEv.pageX - selectorArea.offsetLeft;
@@ -111,35 +119,47 @@ window.addEventListener("load", (): void => {
     }
   });
 
-  // 鼠标抬起后
+  /**
+   * 鼠标抬起后的收尾操作
+   */
   document.addEventListener("mouseup", (): void => {
-    // 释放移动过程监听器
+    /**
+     * 清理移动过程监听器
+     */
     document.removeEventListener("mousemove", whenMoveAction);
+
+    // 设置边界值方便进行判断
     const startLeft: number = lastSavedPosition.translateX;
     const startTop: number = lastSavedPosition.translateY;
     const selectorEndWidth: number = startLeft + lastSavedPosition.width;
     const selectorEndHeight: number = startTop + lastSavedPosition.height;
 
     selectedSpanBucket.clear(); /* 清理 Set */
-    for (const span of allSpans) {
-      span.classList.remove("when-selected");
-      const spanLeft: number = span.offsetLeft + contentArea.offsetLeft;
-      const spanTop: number = span.offsetTop + contentArea.offsetTop;
-      const spanEndWidth: number = span.offsetLeft + span.offsetWidth + contentArea.offsetLeft;
-      const spanEndHeight: number = span.offsetTop + span.offsetHeight + contentArea.offsetTop;
+
+    // 循环判断每个子节点是否被选取覆盖
+    for (const aSpan of allSpans) {
+      aSpan.classList.remove("when-selected");
+      const spanLeft: number = aSpan.offsetLeft + contentArea.offsetLeft;
+      const spanTop: number = aSpan.offsetTop + contentArea.offsetTop;
+      const spanEndWidth: number = aSpan.offsetLeft + aSpan.offsetWidth + contentArea.offsetLeft;
+      const spanEndHeight: number = aSpan.offsetTop + aSpan.offsetHeight + contentArea.offsetTop;
       if (
+        /* 只有完全在拖选框范围内的元素才认为被覆盖 */
         spanLeft >= startLeft &&
         spanTop >= startTop &&
         spanEndWidth <= selectorEndWidth &&
         spanEndHeight <= selectorEndHeight
       ) {
-        span.classList.add("when-selected");
-        selectedSpanBucket.add(span);
+        // 如何被覆盖久将其节点引用添加到 set 当中
+        selectedSpanBucket.add(aSpan);
+        aSpan.classList.add("when-selected");
       }
     }
     console.log(selectedSpanBucket);
 
-    // 添加消失动画
+    /**
+     * 给拖选框添加一个简单的消失过渡动画
+     */
     selectorBox
       .animate(
         [
@@ -155,7 +175,9 @@ window.addEventListener("load", (): void => {
         }
       )
       .finished.finally((): void => {
+        //  无论结果如何, 均清理 style 行内样式字符串
         selectorBox.style.cssText = "transform:translate(0,0) scale(0,0)";
       });
+    // .............
   });
 });
