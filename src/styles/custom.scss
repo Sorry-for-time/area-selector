@@ -1,11 +1,49 @@
 #app {
-  background: scroll no-repeat center url("/img/bgc.jpg");
-  background-size: cover;
+  position: relative;
 
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    // 这些样式参考来自于 jetbrains fleet 官网
+    // this style is from jetbrains fleet official page
+    background: scroll no-repeat center radial-gradient(rgba(25, 25, 28, 0) 50%, #19191c 80%),
+      conic-gradient(
+        #9c3cf7 0,
+        #19191c 15.2%,
+        #19191c 18.2%,
+        #1e1ae8 20.5%,
+        #19191c 30.2%,
+        #19191c 50%,
+        #0e0ab4 56.5%,
+        #1e1ae8 59.4%,
+        #060551 66.2%,
+        #101057 72.9%,
+        #242473 85.1%,
+        #1e1ae8 89.1%,
+        #0a06b7 90.6%,
+        #19191c 93.7%,
+        #9c3cf7 100%
+      );
+    background-size: cover;
+    filter: blur(3px);
+    animation: scroll-bgc 3s linear infinite alternate-reverse;
+
+    @keyframes scroll-bgc {
+      from {
+        transform: scale(2) rotate(0deg);
+      }
+      to {
+        transform: scale(2) rotate(20deg);
+      }
+    }
+  }
 
   .selector-area {
     width: 90%;
@@ -23,7 +61,7 @@
       top: 0;
       bottom: 0;
       left: 0;
-      background-color: #80e1ff80;
+      background-color: #36d0ff5e;
       transform-origin: left top; /* 更改变换坐标原点 */
       transform: scale(0);
       will-change: transform;
