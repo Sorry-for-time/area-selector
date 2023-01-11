@@ -1,5 +1,7 @@
 #app {
   background: scroll no-repeat center url("/img/bgc.jpg");
+  background-size: cover;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,14 +17,16 @@
 
     // 框选器
     .selector-box {
-      z-index: 999;
+      z-index: 233;
       position: absolute;
-      border: 1px dashed hsl(221, 64%, 49%);
-      background-color: hsla(180, 65%, 65%, 0.24);
-
-      &.hide {
-        display: none;
-      }
+      right: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #80e1ff80;
+      transform-origin: left top; /* 更改变换坐标原点 */
+      transform: scale(0);
+      will-change: transform;
     }
 
     .content-area {
