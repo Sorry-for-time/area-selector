@@ -11,8 +11,8 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    // 这些样式参考来自于 jetbrains fleet 官网
-    // this style is from jetbrains fleet official page
+    // 这些样式来自于 jetbrains fleet 官网
+    // these style from jetbrains fleet official page
     background: scroll no-repeat center radial-gradient(rgba(25, 25, 28, 0) 50%, #19191c 80%),
       conic-gradient(
         #9c3cf7 0,
@@ -57,12 +57,20 @@
     .selector-box {
       z-index: 233;
       position: absolute;
+      /*
+        设置宽高默认占满整个拖拽区域
+      */
       right: 0;
       top: 0;
       bottom: 0;
       left: 0;
       background-color: #36d0ff5e;
-      transform-origin: left top; /* 更改变换坐标原点 */
+      /* 更改变换坐标原点 */
+      transform-origin: left top;
+      /*
+        初始讲缩放设置为0, 后续通过 js 判断拖拽坐标按照比例回写 style.cssText 字符串
+        同时改变 translate 属性值来实现设置视觉上的起始位置
+      */
       transform: scale(0);
       will-change: transform;
     }
@@ -90,19 +98,20 @@
         border-radius: 5px;
         box-shadow: 0 0 3px hsla(0, 0%, 0%, 0.521), 0 0 3px black inset;
 
-        &.when-selected {
+        @at-root &.when-selected {
           position: relative;
 
           &::before {
             content: "";
             position: absolute;
             box-sizing: border-box;
-            right: -15%;
-            top: -15%;
+            right: -16%;
+            top: -16%;
             width: 16px;
             height: 16px;
             border-radius: 50%;
             border: 2px dashed rgb(60, 255, 245);
+            animation: fading 1000ms ease-out forwards;
           }
 
           &::after {
@@ -113,6 +122,18 @@
             width: 110%;
             height: 110%;
             margin: -5%;
+            animation: fading 200ms ease-out forwards;
+          }
+
+          @keyframes fading {
+            from {
+              opacity: 0;
+              transform: scale(0.8);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
           }
         }
       }
