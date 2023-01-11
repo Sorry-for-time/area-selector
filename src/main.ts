@@ -1,5 +1,4 @@
-import "@/styles/custom.scss";
-import "@/styles/style.css";
+import "@/styles/styles.scss";
 import "normalize.css";
 
 type PositionType = {
