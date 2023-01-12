@@ -100,7 +100,7 @@ window.addEventListener("load", (): void => {
     lastSavedPosition.height = applyHeight;
 
     // 修改 style 字符串, 因为拖拽框的宽高和拖拽视图区域的一致, 所以比例换算会很简单
-    selectorBox.style.cssText = `transform:translate(${applyLeft}px,${applyTop}px) scale(${
+    selectorBox.style.cssText = `transform:translate3d(${applyLeft}px,${applyTop}px,1px) scale(${
       applyWith / selectorArea.offsetWidth
     },${applyHeight / selectorArea.offsetHeight})`;
   };
@@ -176,7 +176,7 @@ window.addEventListener("load", (): void => {
       )
       .finished.finally((): void => {
         //  无论结果如何, 均清理 style 行内样式字符串
-        selectorBox.style.cssText = "transform:translate(0,0) scale(0,0)";
+        selectorBox.style.cssText = "transform:translate3d(0,0,1px) scale(0,0)";
       });
     // .............
   });
